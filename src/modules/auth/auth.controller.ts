@@ -12,12 +12,12 @@ export class AuthController {
     // POST  /auth/register
     @Post(AuthRoutes.REGISTER)
     async register(@Body() registerDto:RegisterDto){
-        return this.authService.register(registerDto);
+        return this.authService.Register(registerDto);
     }
 
     // POST  /auth/login
     @Post(AuthRoutes.LOGIN)
     async login(@Body() loginDto:LoginDto){
-        return this.authService.login(loginDto)
+        //return this.authService.login(loginDto)
     }
 }
