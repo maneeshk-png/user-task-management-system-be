@@ -49,36 +49,22 @@ export class AuthService {
    * VALIDATE USER (used by LocalStrategy)
    */
   async validateUser(username: string, password: string) {
-    this.logger.log(`Validating user: ${username}`);
-
     const user = await this.usersRepo.findByUsername(username);
-    if (!user) {
-      this.logger.warn(`User not found: ${username}`);
-      return null;
+    if (user && await this.passwordService.comparePassword(password, user.password)) {
+      const { password: _pw, ...result } = user; // keep id
+      return result;
     }
-
-    const isMatch = await this.passwordService.comparePassword(password, user.password);
-    if (!isMatch) { // Password mismatch
-      this.logger.warn(`Password mismatch: ${username}`);
-      return null;
-    }
-
-    const { password: _, ...result } = user;
-    return result; // attached to req.user
+    return null;
   }
 
   /**
    * LOGIN (called AFTER LocalStrategy validation)
    */
   async login(user: any) {
-    this.logger.log(`Login success: ${user.username}`); // user is from LocalStrategy's validate() return
-
-    const payload = { username: user.username, sub: user.id }; // sub is standard JWT claim for user ID
-    const { password, ...userWithoutPassword } = user; // Exclude password from response
-
+    const payload = { username: user.username, sub: user.id }; // include id
     return {
-      access_token: this.jwtService.sign(payload), // Generate JWT token
-      user: userWithoutPassword, // Return user info without password
+      access_token: this.jwtService.sign(payload),
+      user, // or strip password if needed
     };
   }
 }

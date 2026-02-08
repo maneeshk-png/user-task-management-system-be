@@ -7,14 +7,14 @@ import { JWT_CONSTANTS } from '../constants/auth.constants';
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor() {
     super({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(), // Bearer token
+      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(), // read Bearer token
       ignoreExpiration: false,
-      secretOrKey: JWT_CONSTANTS.secret, // Use the secret from constants
+      secretOrKey: JWT_CONSTANTS.secret, // use the configured JWT secret
     });
   }
 
   async validate(payload: any) {
-    // This is attached to req.user
-    return { userId: payload.sub, username: payload.username };
+    // attach to req.user
+    return { id: payload.sub, username: payload.username };
   }
 }
