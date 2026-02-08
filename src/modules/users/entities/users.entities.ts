@@ -5,7 +5,7 @@ export class User{
 @PrimaryGeneratedColumn('uuid') //auto generated ID
 id:string;
 
-@Column({unique:true})
+@Column({unique:true}) //username must be unique
 username:string;
 
 @Column()
