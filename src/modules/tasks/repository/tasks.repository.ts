@@ -54,6 +54,7 @@ async getTasks(ownerId: string, filters) {
 }
 
 
+
   //update Task
   updateTask(id: number, data: Partial<Task>) {
     return this.repo.update(id, data);
@@ -63,4 +64,24 @@ async getTasks(ownerId: string, filters) {
   deleteTask(id: number) {
     return this.repo.delete(id);
   }
+
+  //getTaskSummary
+  async getTaskSummary(ownerId:string){
+    const result=await this.repo.createQueryBuilder('task')
+    .select('COUNT(*)','total')
+    .addSelect(`COUNT(CASE WHEN task.status='todo' THEN 1 END)`,'todo')
+    .addSelect(`COUNT(CASE WHEN task.status='in-progress' THEN 1 END)`,'inProgress')
+    .addSelect(`COUNT(CASE WHEN task.status='done' THEN 1 END)`,'done')
+    .where('task.ownerId=:ownerId',{ownerId})
+    .getRawOne();
+
+    return {
+      total:Number(result.total),
+      todo:Number(result.todo),
+      inProgress:Number(result.inProgress),
+      done:Number(result.done)
+    }
+  }
+
+
 }
