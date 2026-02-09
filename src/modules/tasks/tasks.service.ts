@@ -1,5 +1,6 @@
 import { ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
 import { TasksRepository } from "./repository/tasks.repository";
+import { CreateTaskDto } from "./dto/create-task.dto";
 
 @Injectable()
 export class TasksService {
@@ -8,6 +9,11 @@ export class TasksService {
   createTask(userId: string, dto: any) {
     // create a new task for the authenticated user
     return this.tasksRepo.createTask({ ...dto, ownerId: userId });
+  }
+
+  //create Many Tasks
+  createManyTask(ownerId:string,createTasks:CreateTaskDto[]){
+    return this.tasksRepo.createMany(ownerId,createTasks);
   }
 
   getTasks(userId: string, filters: any) {
