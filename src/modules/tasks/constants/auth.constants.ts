@@ -1,3 +1,4 @@
 export const taskRoutes = {
-    BASE: 'tasks'
+    BASE: 'tasks',
+    SUMMARY:'summary'
   };

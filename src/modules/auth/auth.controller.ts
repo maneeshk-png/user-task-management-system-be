@@ -3,6 +3,8 @@ import { AuthRoutes } from './constants/auth.routes';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { LocalAuthGuard } from './guards/local-auth.guard';
+import { CurrentUser } from './decorators/current-user.decorator';
+import { User } from '../users/entities/users.entities';
 
 
 @Controller(AuthRoutes.BASE) //base route
@@ -18,7 +20,7 @@ export class AuthController {
     // POST  /auth/login
     @Post(AuthRoutes.LOGIN)
     @UseGuards(LocalAuthGuard) // Apply local auth guard to this route
-    async login(@Req() req: any) {
-        return this.authService.login(req.user);
+    async login( @CurrentUser() user:User) {
+        return this.authService.login(user);
     }
 }

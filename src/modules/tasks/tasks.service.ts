@@ -42,4 +42,9 @@ export class TasksService {
     await this.tasksRepo.deleteTask(id);
     return { message: 'Task deleted' };
   }
+
+  //get Task Summary
+  async getSummary(ownerId:string){
+    return this.tasksRepo.getTaskSummary(ownerId);
+  }
 }
