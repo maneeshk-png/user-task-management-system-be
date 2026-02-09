@@ -2,6 +2,7 @@ import { Repository } from "typeorm";
 import { Task } from "../entities/task.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Injectable } from "@nestjs/common";
+import { CreateTaskDto } from "../dto/create-task.dto";
 
 @Injectable()
 export class TasksRepository {
@@ -11,6 +12,14 @@ export class TasksRepository {
   createTask(task: Partial<Task>) {
     const newTask = this.repo.create(task);
     return this.repo.save(newTask);
+  }
+
+  //create Many Task
+  async createMany(ownerId:string,createTaskDto:CreateTaskDto[]){
+    const tasks=createTaskDto.map(cTD=>
+      this.repo.create({...cTD,ownerId})
+    )
+    return this.repo.save(tasks);
   }
 
   //find Task by Id
