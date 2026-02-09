@@ -7,34 +7,59 @@ import { Injectable } from "@nestjs/common";
 export class TasksRepository {
   constructor(@InjectRepository(Task) private repo: Repository<Task>) {}
 
+  //Create Task
   createTask(task: Partial<Task>) {
     const newTask = this.repo.create(task);
     return this.repo.save(newTask);
   }
 
+  //find Task by Id
   findById(id: number) {
     return this.repo.findOne({ where: { id } });
   }
 
-  async getTasks(ownerId: string, filters) {
-    const { status, search, page = 1, limit = 10 } = filters;
+//getTasks
+async getTasks(ownerId: string, filters) {
+  const { status, search, page = 1, limit = 10 } = filters;
 
-    const qb = this.repo.createQueryBuilder('task')
-      .where('task.ownerId = :ownerId', { ownerId });
+  const pageNumber = Number(page) || 1;
+  const limitNumber = Math.min(Number(limit) || 10, 50);
 
-    if (status) qb.andWhere('task.status = :status', { status });
-    if (search) qb.andWhere('task.title ILIKE :search', { search: `%${search}%` });
+  const qb = this.repo.createQueryBuilder('task')
+    .where('task.ownerId = :ownerId', { ownerId });
 
-    qb.skip((page - 1) * limit).take(limit);
-
-    const [tasks, total] = await qb.getManyAndCount();
-    return { tasks, total };
+  if (status) {
+    qb.andWhere('task.status = :status', { status });
   }
 
+  if (search?.trim()) {
+    qb.andWhere(
+      '(task.title ILIKE :search OR task.description ILIKE :search)',
+      { search: `%${search.trim()}%` },
+    );
+  }
+
+  qb.orderBy('task.createdAt', 'DESC')
+    .skip((pageNumber - 1) * limitNumber)
+    .take(limitNumber);
+
+  const [tasks, total] = await qb.getManyAndCount();
+
+  return {
+    data: tasks,
+    total,
+    page: pageNumber,
+    limit: limitNumber,
+  };
+}
+
+
+  //update Task
   updateTask(id: number, data: Partial<Task>) {
     return this.repo.update(id, data);
   }
 
+  //Delete Task
   deleteTask(id: number) {
     return this.repo.delete(id);
   }
