@@ -5,6 +5,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   ManyToOne,
+  JoinColumn,
 } from 'typeorm';
 import { TaskStatus } from '../domain/task-status.enum';
 import { User } from 'src/modules/users/entities/users.entities';
