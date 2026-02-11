@@ -37,7 +37,7 @@ async getTasks(ownerId: string, filters) {
   const qb = this.repo.createQueryBuilder('task')
     .where('task.ownerId = :ownerId', { ownerId });
 
-  if (status) {
+  if (status && status!=='all') {
     qb.andWhere('task.status = :status', { status });
   }
 
@@ -48,7 +48,7 @@ async getTasks(ownerId: string, filters) {
     );
   }
 
-  qb.orderBy('task.createdAt', 'DESC')
+  qb.orderBy('task.createdAt', 'ASC')
     .skip((pageNumber - 1) * limitNumber)
     .take(limitNumber);
 

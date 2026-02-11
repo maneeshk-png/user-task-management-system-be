@@ -4,6 +4,7 @@ import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 // Custom decorator to access logged-in user from request
 export const CurrentUser = createParamDecorator(
   (_data: unknown, ctx: ExecutionContext) => {
+    //Get the underlying HTTP request object
     const request = ctx.switchToHttp().getRequest();
     return request.user;
   },

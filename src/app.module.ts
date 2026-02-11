@@ -2,29 +2,22 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './modules/auth/auth.module';
-import { UsersService } from './modules/users/users.service';
-import { UsersController } from './modules/users/users.controller';
 import { UsersModule } from './modules/users/users.module';
-import { TasksService } from './modules/tasks/tasks.service';
-import { TasksController } from './modules/tasks/tasks.controller';
 import { TasksModule } from './modules/tasks/tasks.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { AppConfigModule } from './config/config.module';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { getDatabaseConfig } from './database/database.config';
+import { DatabaseModule } from './database/database.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: process.env.POSTGRES_HOST,
-      port: Number(process.env.POSTGRES_PORT),
-      username: process.env.POSTGRES_USER ,
-      password: process.env.POSTGRES_PASSWORD,
-      database: process.env.POSTGRES_DB,
-      autoLoadEntities: true,
-      synchronize: true, // only for dev, auto-creates tables
-    }),
+    ConfigModule.forRoot({isGlobal:true}),
+    DatabaseModule,
     AuthModule,
     UsersModule,
     TasksModule,
+    AppConfigModule
   ],
   controllers: [AppController],
   providers: [AppService],

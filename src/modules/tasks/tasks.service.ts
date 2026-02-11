@@ -1,6 +1,7 @@
 import { ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
 import { TasksRepository } from "./repository/tasks.repository";
 import { CreateTaskDto } from "./dto/create-task.dto";
+import { AuthService } from "../auth/auth.service";
 
 @Injectable()
 export class TasksService {
